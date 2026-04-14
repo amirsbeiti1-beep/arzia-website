@@ -1082,10 +1082,10 @@
                 <div style="margin-top: 35px; padding: 25px; background: linear-gradient(135deg, var(--soft-gold) 0%, #f59e0b 100%); border-radius: 12px; color: white;">
                     <h4 style="margin-bottom: 15px; font-size: 16px;">Get Weekly Impact Updates</h4>
                     <p style="font-size: 14px; margin-bottom: 20px; opacity: 0.95;">Real photos. Real numbers. No spam. Just weekly proof that your donation is changing lives.</p>
-                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                        <input type="email" id="email-input" placeholder="your@email.com" style="flex: 1; min-width: 200px; padding: 12px 16px; border: none; border-radius: 6px; font-size: 14px;" />
-                        <button onclick="subscribeEmail()" style="padding: 12px 24px; background: var(--cedar-green); border: none; border-radius: 6px; color: white; font-weight: 600; cursor: pointer; white-space: nowrap; transition: all 0.3s ease;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">Subscribe</button>
-                    </div>
+                    <form action="https://formspree.io/f/xdaykdpk" method="POST" style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        <input type="email" name="email" placeholder="your@email.com" required style="flex: 1; min-width: 200px; padding: 12px 16px; border: none; border-radius: 6px; font-size: 14px;" />
+                        <button type="submit" style="padding: 12px 24px; background: var(--cedar-green); border: none; border-radius: 6px; color: white; font-weight: 600; cursor: pointer; white-space: nowrap; transition: all 0.3s ease;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">Subscribe</button>
+                    </form>
                     <p style="font-size: 11px; margin-top: 12px; opacity: 0.85;">✓ We never share your email • ✓ Unsubscribe anytime</p>
                 </div>
 
@@ -1258,66 +1258,6 @@
                 }
             });
         }
-
-        // Email Subscription Function - Connect to Backend
-        function subscribeEmail() {
-            const emailInput = document.getElementById('email-input');
-            const email = emailInput.value.trim();
-            
-            if (!email || !email.includes('@')) {
-                alert('Please enter a valid email address');
-                return;
-            }
-
-            // Disable button during submission
-            const button = event.target;
-            const originalText = button.textContent;
-            button.textContent = 'Subscribing...';
-            button.disabled = true;
-            
-            // Send to backend
-            fetch('/api/subscribe', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ email: email })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    emailInput.value = '';
-                    button.textContent = '✓ Subscribed!';
-                    button.style.background = 'var(--cedar-green)';
-                    setTimeout(() => {
-                        button.textContent = originalText;
-                        button.disabled = false;
-                    }, 2000);
-                } else {
-                    alert(data.message || 'Something went wrong');
-                    button.textContent = originalText;
-                    button.disabled = false;
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Connection error. Please try again.');
-                button.textContent = originalText;
-                button.disabled = false;
-            });
-        }
-
-        // Allow Enter key for email subscription
-        document.addEventListener('DOMContentLoaded', function() {
-            const emailInput = document.getElementById('email-input');
-            if (emailInput) {
-                emailInput.addEventListener('keypress', function(e) {
-                    if (e.key === 'Enter') {
-                        subscribeEmail();
-                    }
-                });
-            }
-        });
 
         // Smooth scroll for navigation
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
